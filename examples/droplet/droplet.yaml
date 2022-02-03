@@ -1,0 +1,10 @@
+apiVersion: droplet.digitalocean.jet.crossplane.io/v1alpha1
+kind: Droplet
+metadata:
+  name: crossplane-example
+spec:
+  forProvider:
+    image: ubuntu-18-04-x64
+    name: crossplane-example
+    region: nyc3
+    size: s-1vcpu-1gb

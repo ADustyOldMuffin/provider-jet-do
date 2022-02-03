@@ -27,17 +27,14 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/crossplane-contrib/provider-jet-template/apis/v1alpha1"
+	"github.com/crossplane-contrib/provider-jet-digitalocean/apis/v1alpha1"
 )
 
 const (
-	keyUsername = "username"
-	keyPassword = "password"
-	keyHost     = "host"
+	keyToken = "do_token"
 
-	// Template credentials environment variable names
-	envUsername = "HASHICUPS_USERNAME"
-	envPassword = "HASHICUPS_PASSWORD"
+	// DigitalOcean credentials environment variable names
+	envToken = "DIGITALOCEAN_TOKEN"
 )
 
 const (
@@ -48,7 +45,7 @@ const (
 	errGetProviderConfig    = "cannot get referenced ProviderConfig"
 	errTrackUsage           = "cannot track ProviderConfig usage"
 	errExtractCredentials   = "cannot extract credentials"
-	errUnmarshalCredentials = "cannot unmarshal template credentials as JSON"
+	errUnmarshalCredentials = "cannot unmarshal digitalocean credentials as JSON"
 )
 
 // TerraformSetupBuilder builds Terraform a terraform.SetupFn function which
@@ -81,19 +78,18 @@ func TerraformSetupBuilder(version, providerSource, providerVersion string) terr
 		if err != nil {
 			return ps, errors.Wrap(err, errExtractCredentials)
 		}
-		templateCreds := map[string]string{}
-		if err := json.Unmarshal(data, &templateCreds); err != nil {
+		digitaloceanCreds := map[string]string{}
+		if err := json.Unmarshal(data, &digitaloceanCreds); err != nil {
 			return ps, errors.Wrap(err, errUnmarshalCredentials)
 		}
 
 		// set provider configuration
 		ps.Configuration = map[string]interface{}{
-			"host": templateCreds[keyHost],
+			"token": digitaloceanCreds[keyToken],
 		}
 		// set environment variables for sensitive provider configuration
 		ps.Env = []string{
-			fmt.Sprintf(fmtEnvVar, envUsername, templateCreds[keyUsername]),
-			fmt.Sprintf(fmtEnvVar, envPassword, templateCreds[keyPassword]),
+			fmt.Sprintf(fmtEnvVar, envToken, digitaloceanCreds[keyToken]),
 		}
 		return ps, nil
 	}
