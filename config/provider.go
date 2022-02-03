@@ -17,6 +17,7 @@ limitations under the License.
 package config
 
 import (
+	"github.com/crossplane-contrib/provider-jet-digitalocean/config/database"
 	"github.com/crossplane-contrib/provider-jet-digitalocean/config/droplet"
 	tjconfig "github.com/crossplane/terrajet/pkg/config"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -40,10 +41,17 @@ func GetProvider(resourceMap map[string]*schema.Resource) *tjconfig.Provider {
 		tjconfig.WithDefaultResourceFn(defaultResourceFn),
 		tjconfig.WithIncludeList([]string{
 			"digitalocean_droplet$",
+			"digitalocean_database_cluster$",
+			"digitalocean_database_connection_pool$",
+			"digitalocean_database_db$",
+			"digitalocean_database_firewall$",
+			"digitalocean_database_replica$",
+			"digitalocean_database_user$",
 		}))
 
 	for _, configure := range []func(provider *tjconfig.Provider){
 		droplet.Configure,
+		database.Configure,
 	} {
 		configure(pc)
 	}

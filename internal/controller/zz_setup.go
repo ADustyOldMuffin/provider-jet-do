@@ -25,6 +25,12 @@ import (
 	tjconfig "github.com/crossplane/terrajet/pkg/config"
 	"github.com/crossplane/terrajet/pkg/terraform"
 
+	database "github.com/crossplane-contrib/provider-jet-digitalocean/internal/controller/database/database"
+	databasecluster "github.com/crossplane-contrib/provider-jet-digitalocean/internal/controller/database/databasecluster"
+	databaseconnectionpool "github.com/crossplane-contrib/provider-jet-digitalocean/internal/controller/database/databaseconnectionpool"
+	databasefirewall "github.com/crossplane-contrib/provider-jet-digitalocean/internal/controller/database/databasefirewall"
+	databasereplica "github.com/crossplane-contrib/provider-jet-digitalocean/internal/controller/database/databasereplica"
+	databaseuser "github.com/crossplane-contrib/provider-jet-digitalocean/internal/controller/database/databaseuser"
 	droplet "github.com/crossplane-contrib/provider-jet-digitalocean/internal/controller/droplet/droplet"
 	providerconfig "github.com/crossplane-contrib/provider-jet-digitalocean/internal/controller/providerconfig"
 )
@@ -33,6 +39,12 @@ import (
 // the supplied manager.
 func Setup(mgr ctrl.Manager, l logging.Logger, wl workqueue.RateLimiter, ps terraform.SetupFn, ws *terraform.WorkspaceStore, cfg *tjconfig.Provider, concurrency int) error {
 	for _, setup := range []func(ctrl.Manager, logging.Logger, workqueue.RateLimiter, terraform.SetupFn, *terraform.WorkspaceStore, *tjconfig.Provider, int) error{
+		database.Setup,
+		databasecluster.Setup,
+		databaseconnectionpool.Setup,
+		databasefirewall.Setup,
+		databasereplica.Setup,
+		databaseuser.Setup,
 		droplet.Setup,
 		providerconfig.Setup,
 	} {
